@@ -1,0 +1,15 @@
+type A {
+  field1: Int!
+  b: B!
+  c: C
+}
+
+type B {
+  field2: Int!
+  a: A!
+}
+
+type C {
+  field3: Int!
+  b: B!
+}
