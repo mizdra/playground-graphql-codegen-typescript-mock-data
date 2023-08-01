@@ -20,6 +20,7 @@ const config: CodegenConfig = {
         addTypename: true,
         terminateCircularRelationships: true,
         enumsAsTypes: true,
+        useImplementingTypes: true,
       },
     },
   },
