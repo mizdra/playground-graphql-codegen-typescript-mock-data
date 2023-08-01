@@ -27,7 +27,7 @@ type TerminateCircularRelationship<T extends Record<string, unknown>, Visited = 
     : T[K];
 };
 
-export const fakeA = <const T extends DeepPartial<A> = {}>(overrides?: Partial<A>, _relationshipsToOmit: Set<string> = new Set()): Merge<TerminateCircularRelationship<DeepExcludeMaybe<{ __typename: 'A' } & A>>, Required<T>> => {
+export const fakeA = <const T extends DeepPartial<A> = {}>(overrides?: T, _relationshipsToOmit: Set<string> = new Set()): Merge<TerminateCircularRelationship<DeepExcludeMaybe<{ __typename: 'A' } & A>>, Required<T>> => {
     const relationshipsToOmit: Set<string> = new Set(_relationshipsToOmit);
     relationshipsToOmit.add('A');
     return {
@@ -38,7 +38,7 @@ export const fakeA = <const T extends DeepPartial<A> = {}>(overrides?: Partial<A
     } as any;
 };
 
-export const fakeB = <const T extends DeepPartial<B> = {}>(overrides?: Partial<B>, _relationshipsToOmit: Set<string> = new Set()): Merge<TerminateCircularRelationship<DeepExcludeMaybe<{ __typename: 'B' } & B>>, Required<T>> => {
+export const fakeB = <const T extends DeepPartial<B> = {}>(overrides?: T, _relationshipsToOmit: Set<string> = new Set()): Merge<TerminateCircularRelationship<DeepExcludeMaybe<{ __typename: 'B' } & B>>, Required<T>> => {
     const relationshipsToOmit: Set<string> = new Set(_relationshipsToOmit);
     relationshipsToOmit.add('B');
     return {
@@ -48,7 +48,7 @@ export const fakeB = <const T extends DeepPartial<B> = {}>(overrides?: Partial<B
     } as any;
 };
 
-export const fakeC = <const T extends DeepPartial<C> = {}>(overrides?: Partial<C>, _relationshipsToOmit: Set<string> = new Set()): Merge<TerminateCircularRelationship<DeepExcludeMaybe<{ __typename: 'C' } & C>>, Required<T>> => {
+export const fakeC = <const T extends DeepPartial<C> = {}>(overrides?: T, _relationshipsToOmit: Set<string> = new Set()): Merge<TerminateCircularRelationship<DeepExcludeMaybe<{ __typename: 'C' } & C>>, Required<T>> => {
     const relationshipsToOmit: Set<string> = new Set(_relationshipsToOmit);
     relationshipsToOmit.add('C');
     return {
