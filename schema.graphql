@@ -1,4 +1,4 @@
-type A {
+type A implements AC {
   field1: Int!
   b: B!
   c: C
@@ -9,7 +9,11 @@ type B {
   a: A!
 }
 
-type C {
+type C implements AC {
   field3: Int!
+  b: B!
+}
+
+interface AC {
   b: B!
 }

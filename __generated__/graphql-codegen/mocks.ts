@@ -1,5 +1,5 @@
 import casual from 'casual';
-import { A, B, C } from './types';
+import { A, Ac, B, C } from './types';
 
 casual.seed(0);
 
@@ -35,6 +35,15 @@ export const fakeA = <const T extends DeepPartial<A> = {}>(overrides?: T, _relat
         b: overrides && overrides.hasOwnProperty('b') ? overrides.b! : relationshipsToOmit.has('B') ? {} as B : fakeB({}, relationshipsToOmit),
         c: overrides && overrides.hasOwnProperty('c') ? overrides.c! : relationshipsToOmit.has('C') ? {} as C : fakeC({}, relationshipsToOmit),
         field1: overrides && overrides.hasOwnProperty('field1') ? overrides.field1! : casual.integer(0, 9999),
+    } as any;
+};
+
+export const fakeAc = <const T extends DeepPartial<Ac> = {}>(overrides?: T, _relationshipsToOmit: Set<string> = new Set()): Merge<TerminateCircularRelationship<DeepExcludeMaybe<{ __typename: 'AC' } & Ac>>, Required<T>> => {
+    const relationshipsToOmit: Set<string> = new Set(_relationshipsToOmit);
+    relationshipsToOmit.add('Ac');
+    return {
+        __typename: 'AC',
+        b: overrides && overrides.hasOwnProperty('b') ? overrides.b! : relationshipsToOmit.has('B') ? {} as B : fakeB({}, relationshipsToOmit),
     } as any;
 };
 

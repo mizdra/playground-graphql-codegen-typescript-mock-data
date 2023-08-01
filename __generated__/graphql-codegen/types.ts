@@ -14,11 +14,15 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
-export type A = {
+export type A = Ac & {
   __typename: 'A';
   b: B;
   c?: Maybe<C>;
   field1: Scalars['Int']['output'];
+};
+
+export type Ac = {
+  b: B;
 };
 
 export type B = {
@@ -27,7 +31,7 @@ export type B = {
   field2: Scalars['Int']['output'];
 };
 
-export type C = {
+export type C = Ac & {
   __typename: 'C';
   b: B;
   field3: Scalars['Int']['output'];
