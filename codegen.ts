@@ -12,7 +12,7 @@ const config: CodegenConfig = {
       },
     },
     '__generated__/graphql-codegen/mocks.ts': {
-      plugins: ['typescript-mock-data'],
+      plugins: ['@mizdra/graphql-codegen-typescript-mock-data'],
       config: {
         typesFile: './types.ts',
         prefix: 'fake',

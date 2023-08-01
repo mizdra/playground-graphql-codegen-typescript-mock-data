@@ -1,100 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable no-use-before-define */
-type Maybe<T> = T | null;
+
+import { fakeA, fakeB } from './__generated__/graphql-codegen/mocks.js';
+
 const expectType: <Type>(value: Type) => void = () => {};
-
-// GraphQL の type のように、循環する relationship を持つ型があるとする。
-type A = {
-  prop1: number;
-  b: B;
-  c?: Maybe<C>;
-};
-type B = {
-  prop2: number;
-  a: A;
-};
-type C = {
-  prop3: number;
-  b: B;
-};
-
-// https://github.com/type-challenges/type-challenges/issues/608
-type Merge<F, S> = {
-  [K in keyof F | keyof S]: K extends keyof S ? S[K] : K extends keyof F ? F[K] : never;
-};
-
-type DeepPartial<T> = T extends object
-  ? {
-      [P in keyof T]?: DeepPartial<T[P]> | undefined;
-    }
-  : T;
-
-type DeepExcludeMaybe<T> = T extends object
-  ? {
-      [P in keyof T]-?: DeepExcludeMaybe<Exclude<T[P], null | undefined>>;
-    }
-  : T;
-
-type TerminateCircularRelationship<T extends Record<string, unknown>, Visited = never> = {
-  [K in keyof T]: T[K] extends Visited
-    ? {}
-    : T[K] extends Record<string, unknown>
-    ? TerminateCircularRelationship<T[K], Visited | T>
-    : T[K];
-};
-
-// そしてその型のダミーデータを作成する utility (fakeXXX) があるとする。
-// fakeXXX は relationship を辿って再帰的にダミーデータを生成するようになっている。
-// ただし、fakeXXX の呼び出しが循環しないよう、一度呼び出したことのある fakeXXX は再度呼ばず、
-// 代わりに null で埋めるようにしている。
-function fakeA<const T extends DeepPartial<A> = {}>(
-  overrides?: T,
-  _relationshipsToOmit: Set<string> = new Set(),
-): Merge<TerminateCircularRelationship<DeepExcludeMaybe<A>>, Required<T>> {
-  const relationshipsToOmit: Set<string> = new Set(_relationshipsToOmit);
-  relationshipsToOmit.add('A');
-  return {
-    prop1: 'prop1' in overrides ? overrides.prop1! : 0,
-    b: 'b' in overrides ? overrides.b! : relationshipsToOmit.has('B') ? {} : fakeB({}, relationshipsToOmit),
-  } as any;
-}
-function fakeB<const T extends DeepPartial<B> = {}>(
-  overrides?: T,
-  _relationshipsToOmit: Set<string> = new Set(),
-): Merge<TerminateCircularRelationship<DeepExcludeMaybe<B>>, Required<T>> {
-  const relationshipsToOmit: Set<string> = new Set(_relationshipsToOmit);
-  relationshipsToOmit.add('B');
-  return {
-    prop2: 'prop2' in overrides ? overrides.prop2! : 0,
-    a: 'a' in overrides ? overrides.a! : relationshipsToOmit.has('A') ? {} : fakeA({}, relationshipsToOmit),
-  } as any;
-}
-function fakeC<const T extends DeepPartial<C> = {}>(
-  overrides?: T,
-  _relationshipsToOmit: Set<string> = new Set(),
-): Merge<TerminateCircularRelationship<DeepExcludeMaybe<C>>, Required<T>> {
-  const relationshipsToOmit: Set<string> = new Set(_relationshipsToOmit);
-  relationshipsToOmit.add('C');
-  return {
-    prop3: 'prop3' in overrides ? overrides.prop3! : 0,
-    b: 'b' in overrides ? overrides.b! : relationshipsToOmit.has('B') ? {} : fakeB({}, relationshipsToOmit),
-  } as any;
-}
 
 // この utility が返す型が、以下のようになるよう修正したい。
 const a1 = fakeA();
 expectType<{
-  prop1: number;
+  field1: number;
   b: {
-    prop2: number;
+    field2: number;
     a: {};
   };
   c: {
-    prop3: number;
+    field3: number;
     b: {
-      prop2: number;
+      field2: number;
       a: {};
     };
   };
@@ -103,17 +25,17 @@ console.log(a1);
 
 // また、undefined でオーバーライドできるようになっていてほしい。
 const a2 = fakeA({
-  prop1: undefined,
+  field1: undefined,
   b: fakeB({
-    prop2: undefined,
+    field2: undefined,
     a: undefined,
   }),
   c: null,
 });
 expectType<{
-  prop1: undefined;
+  field1: undefined;
   b: {
-    prop2: undefined;
+    field2: undefined;
     a: undefined;
   };
   c: null;
@@ -131,11 +53,11 @@ const a3 = fakeA({
   c: undefined,
 });
 expectType<{
-  prop1: number;
+  field1: number;
   b: {
-    prop2: number;
+    field2: number;
     a: {
-      prop1: number;
+      field1: number;
       b: undefined;
       c: undefined;
     };
