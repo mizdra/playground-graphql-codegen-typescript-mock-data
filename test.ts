@@ -49,8 +49,8 @@ type TerminateCircularRelationship<T extends Record<string, unknown>, Visited = 
 // fakeXXX は relationship を辿って再帰的にダミーデータを生成するようになっている。
 // ただし、fakeXXX の呼び出しが循環しないよう、一度呼び出したことのある fakeXXX は再度呼ばず、
 // 代わりに null で埋めるようにしている。
-function fakeA<const T extends DeepPartial<A>>(
-  overrides: T,
+function fakeA<const T extends DeepPartial<A> = {}>(
+  overrides?: T,
   _relationshipsToOmit: Set<string> = new Set(),
 ): Merge<TerminateCircularRelationship<DeepExcludeMaybe<A>>, Required<T>> {
   const relationshipsToOmit: Set<string> = new Set(_relationshipsToOmit);
@@ -60,8 +60,8 @@ function fakeA<const T extends DeepPartial<A>>(
     b: 'b' in overrides ? overrides.b! : relationshipsToOmit.has('B') ? {} : fakeB({}, relationshipsToOmit),
   } as any;
 }
-function fakeB<const T extends DeepPartial<B>>(
-  overrides: T,
+function fakeB<const T extends DeepPartial<B> = {}>(
+  overrides?: T,
   _relationshipsToOmit: Set<string> = new Set(),
 ): Merge<TerminateCircularRelationship<DeepExcludeMaybe<B>>, Required<T>> {
   const relationshipsToOmit: Set<string> = new Set(_relationshipsToOmit);
@@ -71,8 +71,8 @@ function fakeB<const T extends DeepPartial<B>>(
     a: 'a' in overrides ? overrides.a! : relationshipsToOmit.has('A') ? {} : fakeA({}, relationshipsToOmit),
   } as any;
 }
-function fakeC<const T extends DeepPartial<C>>(
-  overrides: T,
+function fakeC<const T extends DeepPartial<C> = {}>(
+  overrides?: T,
   _relationshipsToOmit: Set<string> = new Set(),
 ): Merge<TerminateCircularRelationship<DeepExcludeMaybe<C>>, Required<T>> {
   const relationshipsToOmit: Set<string> = new Set(_relationshipsToOmit);
@@ -84,7 +84,7 @@ function fakeC<const T extends DeepPartial<C>>(
 }
 
 // この utility が返す型が、以下のようになるよう修正したい。
-const a1 = fakeA({});
+const a1 = fakeA();
 expectType<{
   prop1: number;
   b: {
